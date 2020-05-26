@@ -51,20 +51,29 @@ class apka():
         nowy = (None, self.nimie.get(), self.nnazwisko.get(), self.nklasa.get())
         cur.execute('INSERT INTO uczniowie VALUES(%s, %s, %s, %s)', nowy)
         con.commit()
-
-        uczniowie = cur.fetchall()
-
-        for uczen in uczniowie:
-            print(uczen['id'], uczen['imie'], uczen['nazwisko'], uczen['nazwa'])
         self.ins.destroy()
 
     def czytajdane(self):
 
         self.find = tki.Tk()
-        self.e = tki.Entry(self.find, width=10)
-        self.e.grid(row=0, column=0)
-        self.e.insert(tki.END, "3")
-        self.szukaj = tki.Button(self.find, width=10, text="szukaj", command=self.pokaz).grid(row=1, column=0, sticky="nsew", pady=2)
+        self.find.title('Szukaj ucznia')
+        self.find.geometry("275x150")
+
+        self.fimie = tki.Entry(self.find, width=10)
+        self.fimie.insert(tki.END, "Adam")
+        self.fimie.grid(row=0, column=2)
+        self.fnazwisko = tki.Entry(self.find, width=10)
+        self.fnazwisko.insert(tki.END, "Rudy")
+        self.fnazwisko.grid(row=1, column=2)
+        #self.fklasa = tki.Entry(self.find, width=10)
+        #self.fklasa.insert(tki.END, int("1"))
+        #self.fklasa.grid(row=2, column=2)
+        self.nim = tki.Label(self.find, text="Imię:")
+        self.nim.grid(row=0, column=0)
+        self.nnaz = tki.Label(self.find, text="Nazwisko:").grid(row=1, column=0)
+        self.nkl = tki.Label(self.find, text="Klasa:").grid(row=2, column=0)
+        self.szukaj = tki.Button(self.find, width=10, text="szukaj", command=self.pokaz).grid(row=3, column=0, sticky="nsew", pady=2)
+
 
     def pokaz(self):
 
@@ -75,15 +84,37 @@ class apka():
             """)
         uczniowie = cur.fetchall()
         for uczen in uczniowie:
-            if uczen['ID'] == int(self.e.get()):
-                messagebox.showinfo("uczeń", uczen['imie'])
+            if uczen['nazwisko'] == str(self.fnazwisko.get()) and uczen['imie'] == str(self.fimie.get()):
+                self.wuczen = tki.Tk()
+                self.wuczen.geometry("200x120")
+                self.iduczen = tki.Label(self.wuczen, text=('Uczeń ID: %s'%uczen['ID']))
+                self.iduczen.grid(row=1, column=0)
+                self.iuczen = tki.Label(self.wuczen, text=('Nazwisko: %s'%uczen['imie']))
+                self.iuczen.grid(row=2, column=0)
+                self.nuczen = tki.Label(self.wuczen, text=uczen['nazwisko'])
+                self.nuczen.grid(row=3, column=0)
+                self.kuczen = tki.Label(self.wuczen, text=uczen['nazwa'])
+                self.kuczen.grid(row=4, column=0)
                 print(uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa'])
+                uczenid = uczen['ID']
+
+                              #kasowanie ucznia
+                self.kasuj=tki.Button(self.wuczen, text='Kasuj', command=self.kasowanie)
+                self.kasuj.grid(row=5, column=0)
+
             else:
                 continue
-        self.find.destroy()
+                #messagebox.showwarning("Uwaga", "Nie ma takiego ucznia")
+        #self.find.destroy()
 
 
 # def kasuj_ucznia:
+#kasowanie ucznia
+    def kasowanie(self):
+        sql = "DELETE FROM uczniowie  WHERE address = %s"
+        adr = (uczen,)
+        cur.execute(sql, adr)
+        con.commit()
 
 
 app = apka()
