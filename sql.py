@@ -16,15 +16,15 @@ class apka():
     def __init__(self):
         self.root = tki.Tk()
         self.root.title('Który to uczeń')
-        self.root.geometry("250x50")
+        self.root.geometry("250x55")
         self.check = tki.Button(self.root, text="znajdź ucznia", command=self.czytajdane)
         self.check.grid(row=0, column=2)
         self.insert = tki.Button(self.root, text="wprowadź dane", command=self.insert)
         self.insert.grid(row=0, column=0)
         self.lub = tki.Label(text="lub")
         self.lub.grid(row=0, column=1)
-        #self.kasuj = tki.Button(self.root, text="Kasuj ucznia", command=self.insert)
-        #self.kasuj.grid(row=1, column=0)
+        self.kasuj = tki.Button(self.root, text="Kasuj ucznia", command=self.kasowanie)
+        self.kasuj.grid(row=1, column=0)
 
     def insert(self):
         self.ins = tki.Tk()
@@ -84,7 +84,9 @@ class apka():
             """)
         uczniowie = cur.fetchall()
         for uczen in uczniowie:
+         while len(uczen) == 0:
             if uczen['nazwisko'] == str(self.fnazwisko.get()) and uczen['imie'] == str(self.fimie.get()):
+                print(uczen)
                 self.wuczen = tki.Tk()
                 self.wuczen.geometry("200x120")
                 self.iduczen = tki.Label(self.wuczen, text=('Uczeń ID: %s'%uczen['ID']))
@@ -102,19 +104,51 @@ class apka():
                 self.kasuj=tki.Button(self.wuczen, text='Kasuj', command=self.kasowanie)
                 self.kasuj.grid(row=5, column=0)
 
+                s= s+1
+                print(s)
             else:
-                continue
-                #messagebox.showwarning("Uwaga", "Nie ma takiego ucznia")
+                print(s)
+
+
+            if s==0:
+                messagebox.showwarning("Uwaga", "Nie ma takiego ucznia")
+
         #self.find.destroy()
 
 
 # def kasuj_ucznia:
 #kasowanie ucznia
     def kasowanie(self):
-        sql = "DELETE FROM uczniowie  WHERE address = %s"
-        adr = (uczen,)
-        cur.execute(sql, adr)
-        con.commit()
+        self.kas = tki.Tk()
+        self.kas.title('Kasuj ucznia')
+        self.kas.geometry("275x90")
+        self.nid = tki.Label(self.kas, text="ID:")
+        self.nid.grid(row=0, column=0)
+        self.nid1 = tki.Entry(self.kas, width=5)
+        self.nid1.grid(row=0, column=2)
+        self.ok = tki.Button(self.kas, text="usuń", command=self.usun)
+        self.ok.grid(row=3, column=0)
+        self.nim = tki.Label(self.kas, text="Imię:")
+        self.nim.grid(row=4, column=0)
+        self.nnaz = tki.Label(self.kas, text="Nazwisko:").grid(row=1, column=0)
+        self.nkl = tki.Label(self.kas, text="Klasa:").grid(row=2, column=0)
+
+    def usun(self):
+        sql = "DELETE FROM uczniowie  WHERE uczniowie.ID = %s "
+        adr = int(self.nid1.get())
+        cur.execute("SELECT uczniowie.ID,imie,nazwisko FROM uczniowie  WHERE uczniowie.ID =%s ", adr)
+        es = cur.fetchall()
+        #con.commit()
+        print(len(es))
+        if len(es) > 0:
+            for es in es:
+                print(es['ID'])
+                print("adr: %s"%adr)
+                cur.execute(sql, adr)
+                con.commit()
+        else:
+            print("dupa2")
+
 
 
 app = apka()
