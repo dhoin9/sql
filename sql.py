@@ -25,7 +25,7 @@ class apka():
         #self.lub.grid(row=0, column=1)
         self.kasuj = tki.Button(self.root, text="Kasuj ucznia", command=self.kasowanie)
         self.kasuj.grid(row=1, column=0)
-        self.wszyscy = tki.Button(self.root, text="Pokaż wszystkich", command=tabele.all)
+        self.wszyscy = tki.Button(text="Pokaż wszystkich", command=tabele.all)
         self.wszyscy.grid(row=1, column=1)
 
     def insert(self):
@@ -102,13 +102,8 @@ class apka():
                 print(uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa'])
                 uczenid = uczen['ID']
 
-                              #kasowanie ucznia
-                self.kasuj=tki.Button(self.wuczen, text='Kasuj', command=self.kasowanie)
-                self.kasuj.grid(row=5, column=0)
-                s=0
-                s= s+1
-                print(s)
-                
+
+
             else:
                 continue
 
@@ -119,8 +114,8 @@ class apka():
         #self.find.destroy()
 
 
-# def kasuj_ucznia:
-#kasowanie ucznia
+
+    #kasowanie ucznia
     def kasowanie(self):
         self.kas = tki.Tk()
         self.kas.title('Kasuj ucznia')
@@ -181,89 +176,100 @@ class apka():
             else:
                 continue
 
-class tabele():
-    def new():
-        print("leci")
-        new1 = tki.Tk()
-        new1.title('test')
-        new1.geometry("275x120")
-        frame = tki.Frame(new1)
-        frame.pack()
-        tki.Entry(frame, width=10).pack( side = tki.LEFT)
-        scrollbar = tki.Scrollbar(new1)
-        scrollbar.pack(side=tki.RIGHT, fill=tki.Y)
+class tabele(object):
 
 #pokazywanie wszystkich rekordów tabelarycznie
-    def all1():
-
-        tabela = tki.Tk()
-        tabela.title('Uczniowie')
-        tabela.geometry("275x120")
-        frame=tki.Frame(tabela)
-        frame.pack()
-        scrollbar = tki.Scrollbar(tabela)
-        scrollbar.grid(row=1, column=5)
-
-
-        fimie = tki.Entry(tabela, width=10)
-        fimie.insert(tki.END, "Imię")
-        fimie.pack(row=0, column=1)
-        fnazwisko = tki.Entry(tabela, width=10)
-        fnazwisko.insert(tki.END, "Nazwisko")
-        fnazwisko.grid(row=0, column=2)
-        tki.Label(tabela, text="ID:").grid(row=1, column=0)
-        tki.Label(tabela, text="Imię:").grid(row=1, column=1)
-        tki.Label(tabela, text="Nazwisko:").grid(row=1, column=2)
-        tki.Label(tabela, text="Klasa:").grid(row=1, column=3)
-     #Funkcja pobiera i wyświetla dane z bazy
-        """Funkcja pobiera i wyświetla dane z bazy."""
-        cur.execute(
-            """
-            SELECT uczniowie.ID,imie,nazwisko,nazwa,profil  FROM uczniowie,klasa WHERE uczniowie.klasa=klasa.ID
-            """)
-        uczniowie = cur.fetchall()
-        i = 0
-
-        for uczen in uczniowie:
-
-            tki.Label(tabela, text=uczen['ID']).grid(row=2 + i, column=0)
-            tki.Label(tabela, text=uczen['imie']).grid(row=2 + i, column=1)
-            tki.Label(tabela, text=uczen['nazwisko']).grid(row=2 + i, column=2)
-            tki.Label(tabela, text=uczen['nazwa']).grid(row=2 + i, column=3)
-            print(uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa'])
-            i = i + 1
 
     def all():
-
         tabela = tki.Tk()
         tabela.title('Uczniowie')
-        tabela.geometry("275x120")
-
-        #scrollbar = tki.Scrollbar(tabela)
-        #scrollbar.pack(side=tki.RIGHT, fill=tki.Y)
+        tabela.geometry("240x300")
         frame = tki.Frame(tabela)
-        frame.pack(side=tki.TOP, expand=True)
+        frame.pack()
         frame1 = tki.Frame(tabela)
-        frame1.pack(expand=True)
-        frame2 = tki.Frame(tabela, width=100, height=20)
-        frame2.pack(side=tki.BOTTOM, expand=True, fill='both')
-        #scrollb = tki.Scrollbar(frame2)
-        #scrollb.pack(side=tki.RIGHT)
-        #frame['yscrollcommand'] = scrollb.set
+        frame1.pack()
+        frame2 = tki.Frame(tabela, width=40, height=20)
+        frame2.pack(fill='both')
         frame2.grid_rowconfigure(0, weight=1)
         frame2.grid_columnconfigure(0, weight=1)
+        frame3 = tki.Frame(tabela)
+        frame3.pack()
+        #Kasowanie ucznia z sql i z listy
+        def kasowanie():
 
-        fimie = tki.Entry(frame, width=10)
-        fimie.insert(tki.END, "Imię")
-        fimie.grid(row=0, column=0)
-        fnazwisko = tki.Entry(frame, width=10)
-        fnazwisko.insert(tki.END, "Nazwisko")
-        fnazwisko.grid(row=0, column=1)
-        tki.Label(frame1, text="ID:").grid(row=1, column=0)
+            new=mylist.get(tki.ANCHOR)
+            tuple(new)
+            print(new[0])
+            sql = "DELETE FROM uczniowie  WHERE uczniowie.ID = %s "
+            adr = new[0]
+            cur.execute(sql, adr)
+            con.commit()
+            mylist.delete(tki.ANCHOR)
+        def szukanie():
+
+            mylist.delete(0, tki.END)
+            cur.execute(
+            """
+            SELECT uczniowie.ID,imie,nazwisko,nazwa,profil  FROM uczniowie,klasa WHERE uczniowie.klasa=klasa.ID
+            """)
+            uczniowie = cur.fetchall()
+
+            for uczen in uczniowie:
+                if uczen['nazwisko'] == str(nazwisko.get()) and uczen['imie'] == str(imie.get()):
+                    mylist.insert(tki.END, (uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa']))
+                elif uczen['nazwisko'] == str(nazwisko.get()) and len(imie.get()) == 0:
+                    mylist.insert(tki.END, (uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa']))
+                elif len(nazwisko.get()) == 0 and uczen['imie'] == str(imie.get()):
+                    mylist.insert(tki.END, (uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa']))
+                elif len(nazwisko.get()) == 0 and len(imie.get()) == 0:
+                    mylist.insert(tki.END, (uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa']))
+        def mody():
+            zmiany = tki.Tk()
+            zmiany.title('Modyfikuj dane')
+            zmiany.geometry("260x90")
+            new = tuple(mylist.get(tki.ANCHOR))
+            fimie = tki.Entry(zmiany, width=10)
+            fimie.insert(tki.END, new[1])
+            fimie.grid(row=0, column=2)
+            fnazwisko = tki.Entry(zmiany, width=10)
+            fnazwisko.insert(tki.END, new[2])
+            fnazwisko.grid(row=1, column=2)
+            fklasa = tki.Entry(zmiany, width=10)
+            fklasa.insert(tki.END, new[3])
+            nowy = (fimie.get(), fnazwisko.get(), new[0])
+            cur.execute("UPDATE uczniowie SET imie=%s, nazwisko=%s  WHERE ID=%s", nowy)
+            fklasa.grid(row=2, column=2)
+            tki.Label(zmiany, text="Imię:").grid(row=0, column=0)
+            tki.Label(zmiany, text="Nazwisko:").grid(row=1, column=0)
+            tki.Label(zmiany, text="Klasa:").grid(row=2, column=0)
+            tki.Button(zmiany, width=10, text="Zmień", command=lambda: print(nowy) ).grid(row=2, column=3, sticky="nsew", pady=2)
+            con.commit
+            def popraw():
+                con.commit
+
+                print("done")
+        def pusto():
+            mylist.delete(0, tki.END)
+
+        kasuj = tki.Button(frame3, text="Kasuj ucznia", command=kasowanie)
+        kasuj.grid(row=1, column=0)
+        szukaj = tki.Button(frame3, text="Szukaj ucznia", command=szukanie)
+        szukaj.grid(row=1, column=1)
+        mod = tki.Button(frame3, text="Popraw dane", command=mody)
+        mod.grid(row=2, column=1)
+        empty = tki.Button(frame3, text="Wyczysć liste", command=pusto)
+        empty.grid(row=2, column=0)
+        imie = tki.Entry(frame, width=10)
+        imie.insert(tki.END, "Adam")
+        imie.grid(row=0, column=0)
+        nazwisko = tki.Entry(frame, width=10)
+        #nazwisko.insert(tki.END, "Kowal")
+        nazwisko.grid(row=0, column=1)
+        tki.Label(frame1, text="ID  Imię Nazwisko Klasa             ").grid(row=1, column=0, sticky="E")
         tki.Label(frame1, text="Imię:").grid(row=1, column=1)
-        tki.Label(frame1, text="Nazwisko:").grid(row=1, column=2)
-        tki.Label(frame1, text="Klasa:").grid(row=1, column=3)
-     #Funkcja pobiera i wyświetla dane z bazy
+        #tki.Label(frame1, text="Nazwisko:").grid(row=1, column=2)
+        #tki.Label(frame1, text="Klasa:").grid(row=1, column=3)
+        #Funkcja pobiera i wyświetla dane z bazy
         """Funkcja pobiera i wyświetla dane z bazy."""
         cur.execute(
             """
@@ -271,19 +277,21 @@ class tabele():
             """)
         uczniowie = cur.fetchall()
         i = 0
-        mylist = tki.Listbox(frame2, width=35)
+        mylist = tki.Listbox(frame2, width=5, selectmode=tki.EXTENDED)
         mylist.grid(row=0, column=0, sticky="nsew", padx=2, pady=2)
+        #new = tuple(mylist.get(tki.ANCHOR))
         scrollb = tki.Scrollbar(frame2, command=mylist.yview)
         scrollb.grid(row=0, column=1, sticky='nsew')
         mylist['yscrollcommand'] = scrollb.set
         for uczen in uczniowie:
-            mylist.insert(tki.END, (uczen['ID'], uczen['imie'],uczen['nazwisko'],"            ", uczen['nazwa']))
+            mylist.insert(tki.END, (uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa']))
+            #test =tuple(uczen['ID'], uczen['imie'],uczen['nazwisko'], uczen['nazwa'])
             #tki.Label(frame, text=uczen['ID']).grid(row=2 + i, column=0)
             #tki.Label(frame, text=uczen['imie']).grid(row=2 + i, column=1)
             #tki.Label(frame, text=uczen['nazwisko']).grid(row=2 + i, column=2)
             #tki.Label(frame, text=uczen['nazwa']).grid(row=2 + i, column=3)
-            print(uczen['ID'], uczen['imie'], uczen['nazwisko'], uczen['nazwa'])
+            #print(test)
             i = i + 1
-        
+
 app = apka()
 app.root.mainloop()
